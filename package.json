@@ -1,0 +1,30 @@
+{
+  "name": "nptel-notebooklm-sync",
+  "version": "1.0.0",
+  "description": "CLI tool to sync Swayam/NPTEL course transcripts into NotebookLM",
+  "type": "module",
+  "bin": {
+    "nptel-sync": "./dist/cli/index.js"
+  },
+  "scripts": {
+    "dev": "node --import tsx/esm src/cli/index.ts",
+    "build": "tsc",
+    "start": "node dist/cli/index.js"
+  },
+  "dependencies": {
+    "commander": "^12.1.0",
+    "inquirer": "^10.2.2",
+    "lowdb": "^7.0.1",
+    "playwright": "^1.48.2",
+    "winston": "^3.17.0",
+    "chalk": "^5.3.0",
+    "cli-table3": "^0.6.5",
+    "ora": "^8.1.1",
+    "date-fns": "^4.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.9.1",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}
