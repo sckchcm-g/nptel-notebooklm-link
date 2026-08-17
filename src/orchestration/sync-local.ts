@@ -58,7 +58,7 @@ export async function checkLocalSync(): Promise<CheckResult[]> {
 
         let fileExists = false;
         if (mode === 'url') {
-          fileExists = !!lecture.youtubeUrl;
+          fileExists = !!lecture.youtubeUrl || (lecture.sync.status === 'synced' && lecture.sync.method === 'url');
         } else {
           try {
             await fs.access(filePath);
@@ -134,7 +134,16 @@ export async function syncLectureLocally(
   if (mode === 'url') {
     try {
       const urlsFile = path.join(path.dirname(savePath), 'youtube-urls.txt');
-      await fs.appendFile(urlsFile, youtubeUrl + '\n', 'utf-8');
+      let currentContent = '';
+      try {
+        currentContent = await fs.readFile(urlsFile, 'utf-8');
+      } catch {
+        currentContent = '';
+      }
+
+      if (!currentContent.includes(youtubeUrl)) {
+        await fs.appendFile(urlsFile, youtubeUrl + '\n', 'utf-8');
+      }
       
       await updateLectureSync(course.id, week.id, lecture.id, {
         status: 'synced',

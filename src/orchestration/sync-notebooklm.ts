@@ -13,7 +13,7 @@ import path from 'path';
 import type { Page } from 'playwright';
 import type { Course, Week, Lecture } from '../state/types.js';
 import { getAllCourses, updateLectureSync } from '../state/db.js';
-import { readCoursesConfig } from '../config/courses-config.js';
+import { getCourseConfig } from '../config/courses-config.js';
 import type { SyncMode } from '../config/courses-config.js';
 import { logger } from '../utils/logger.js';
 import { slugify } from '../utils/helpers.js';

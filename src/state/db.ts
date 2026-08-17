@@ -72,6 +72,7 @@ export async function upsertCourses(courses: Course[]): Promise<void> {
             if (existingLecture) {
               lecture.sync = existingLecture.sync;
               lecture.transcriptPath = existingLecture.transcriptPath;
+              lecture.youtubeUrl = existingLecture.youtubeUrl;
             }
           }
         }

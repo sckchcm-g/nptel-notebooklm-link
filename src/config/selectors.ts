@@ -21,9 +21,9 @@ export const SWAYAM = {
   weekToggle: 'button[aria-expanded]',                  // the expandable toggle button
 
   // Lecture buttons inside an expanded week
-  // Format: div[id="unit-XX-list"] > button
-  lectureItem: '> button',       // relative to the week list element
-  lectureTitle: 'p.text-sm',     // lecture title paragraph inside button
+  // Format: div[id="unit-XX-list"] > button or > a
+  lectureItem: '> button, > a',       // strictly direct children of the week list
+  lectureTitle: 'p.text-sm, p, span', // lecture title inside button
 
   // Not used (lectures have no direct href — navigation is click-based)
   lectureLink: '',

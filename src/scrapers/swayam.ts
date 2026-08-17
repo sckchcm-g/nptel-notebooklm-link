@@ -91,8 +91,9 @@ export async function scrapeWeeksAndLectures(
       .$eval(SWAYAM.weekTitle, (el) => el.textContent?.trim() ?? '')
       .catch(() => '');
 
-    // Skip non-week sections (About NPTEL, How does it work?, etc.)
-    if (!rawTitle.toLowerCase().startsWith('week')) {
+    // Skip non-instructional sections (About NPTEL, How does it work?, Week 0, Books, etc.)
+    // Only match actual instructional weeks: "Week 1", "Week 2", ...
+    if (!/^week\s*[1-9]\d*/i.test(rawTitle)) {
       continue;
     }
 
@@ -120,13 +121,18 @@ export async function scrapeWeeksAndLectures(
     let lectureIdx = 0;
 
     for (const btn of lectureButtons) {
-      const title = await btn
+      let title = await btn
         .$eval(SWAYAM.lectureTitle, (el) => el.textContent?.trim() ?? '')
         .catch(() => '');
 
-      // Filter: only actual video lecture items (e.g. "Lecture 1 : ...")
-      // Ignore "Lecture Material : Week X", "Quiz: ...", "Feedback Form"
-      if (!/^lecture\s+\d+/i.test(title)) {
+      if (!title) {
+        title = (await btn.textContent())?.trim() ?? '';
+      }
+      title = title.replace(/\s+/g, ' ').trim();
+
+      // Filter: ignore quizzes, feedback forms, download materials, introductory notes, and generic buttons
+      const isNonLecture = /^(quiz|assignment|feedback|lecture material|reading material|reference|announcement|discussion|download|hall ticket|assessment|about|how does|welcome|information about|know your|what you should|certification|best practices|guidelines|mcq|numerical|subjective|programming|text transcripts|books|full screen|click here|manage exam|my bookmarks|bookmarks|q&a|accessibility|ai powered|week\s*\d+)/i.test(title);
+      if (isNonLecture || !title || title.length < 3) {
         continue;
       }
 
@@ -200,7 +206,8 @@ export async function extractYoutubeLinkFromLecture(
       .$eval(SWAYAM.weekTitle, (el) => el.textContent?.trim() ?? '')
       .catch(() => '');
 
-    if (!rawTitle.toLowerCase().startsWith('week')) continue;
+    // Only match instructional weeks (Week 1, Week 2, ...)
+    if (!/^week\s*[1-9]\d*/i.test(rawTitle)) continue;
 
     if (actualWeekIndex === weekIndex) {
       const toggle = await weekEl.$(SWAYAM.weekToggle);
@@ -228,10 +235,15 @@ export async function extractYoutubeLinkFromLecture(
   const lectureButtons = await page.$$(`#${targetAriaControls} ${SWAYAM.lectureItem}`);
   const filteredLectures: typeof lectureButtons = [];
   for (const btn of lectureButtons) {
-    const title = await btn
+    let title = await btn
       .$eval(SWAYAM.lectureTitle, (el) => el.textContent?.trim() ?? '')
       .catch(() => '');
-    if (title.toLowerCase().startsWith('lecture')) {
+    if (!title) {
+      title = (await btn.textContent())?.trim() ?? '';
+    }
+    title = title.replace(/\s+/g, ' ').trim();
+    const isNonLecture = /^(quiz|assignment|feedback|lecture material|reading material|reference|announcement|discussion|download|hall ticket|assessment|about|how does|welcome|information about|know your|what you should|certification|best practices|guidelines|mcq|numerical|subjective|programming|text transcripts|books|full screen|click here|manage exam|my bookmarks|bookmarks|q&a|accessibility|ai powered|week\s*\d+)/i.test(title);
+    if (!isNonLecture && title && title.length >= 3) {
       filteredLectures.push(btn);
     }
   }
