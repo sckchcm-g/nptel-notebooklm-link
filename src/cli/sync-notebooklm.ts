@@ -21,7 +21,7 @@ export async function runSyncNotebooklm(): Promise<void> {
   console.log(chalk.dim('  Make sure you have run `sync-local` first.\n'));
 
   try {
-    const page = await newPage(false);
+    const page = await newPage(true);
     const { synced, skipped, errors, total } = await syncAllToNotebooklm(page);
     await closeBrowser();
 

@@ -25,7 +25,7 @@ export async function getBrowserContext(options?: {
 
   await ensureDir(SETTINGS.browserProfileDir);
 
-  const headless = options?.headless ?? false;
+  const headless = options?.headless ?? true;
 
   logger.info('Launching managed Chromium browser...');
 
@@ -49,7 +49,7 @@ export async function getBrowserContext(options?: {
 /**
  * Open a new page in the shared context.
  */
-export async function newPage(headless = false) {
+export async function newPage(headless = true) {
   const ctx = await getBrowserContext({ headless });
   const page = await ctx.newPage();
   return page;

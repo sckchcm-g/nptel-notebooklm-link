@@ -19,7 +19,7 @@ const STATUS_ICON: Record<string, string> = {
   skipped: chalk.yellow('⊘ skipped'),
 };
 
-export async function runStatus(options: StatusOptions): Promise<void> {
+export async function runStatus(options?: StatusOptions): Promise<void> {
   const courses = await getAllCourses();
 
   if (courses.length === 0) {
@@ -27,8 +27,8 @@ export async function runStatus(options: StatusOptions): Promise<void> {
     return;
   }
 
-  const filterCourseIdx = options.course ? parseInt(options.course, 10) : null;
-  const filterWeekIdx = options.week ? parseInt(options.week, 10) : null;
+  const filterCourseIdx = options?.course ? parseInt(options.course, 10) : null;
+  const filterWeekIdx = options?.week ? parseInt(options.week, 10) : null;
 
   const displayCourses = filterCourseIdx
     ? [courses[filterCourseIdx - 1]].filter(Boolean)

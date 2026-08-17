@@ -13,6 +13,7 @@ import { runSync } from './sync.js';
 import { runSyncLocal } from './sync-local.js';
 import { runSetMode } from './set-mode.js';
 import { runSyncNotebooklm } from './sync-notebooklm.js';
+import { runInteractiveMenu } from './interactive.js';
 
 const program = new Command();
 
@@ -73,9 +74,25 @@ program
   .requiredOption('-m, --method <url|transcript>', '"url" or "transcript"')
   .action(async (options) => { await runSync(options); });
 
+program
+  .command('interactive')
+  .description('Launch interactive menu')
+  .action(async () => { await runInteractiveMenu(); });
+
 process.on('unhandledRejection', (reason) => {
   console.error(chalk.red('\n  Unhandled error:'), reason);
   process.exit(1);
 });
 
-program.parse(process.argv);
+// If no arguments provided, run interactive menu
+if (process.argv.length === 2) {
+  runInteractiveMenu().catch(err => {
+    console.error(err);
+    process.exit(1);
+  });
+} else {
+  program.parseAsync(process.argv).catch((err) => {
+    console.error(chalk.red(err));
+    process.exit(1);
+  });
+}

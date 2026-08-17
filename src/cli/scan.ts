@@ -16,7 +16,7 @@ export async function runScan(): Promise<void> {
   const spinner = ora('Opening browser...').start();
 
   try {
-    const page = await newPage(false);
+    const page = await newPage(true);
     spinner.text = 'Fetching courses...';
 
     const courses = await scrapeCourses(page);

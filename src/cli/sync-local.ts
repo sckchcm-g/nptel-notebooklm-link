@@ -59,7 +59,7 @@ export async function runSyncLocal(): Promise<void> {
   console.log(chalk.cyan(`📥  Syncing ${pending.length} lecture(s)...\n`));
 
   try {
-    const page = await newPage(false);
+    const page = await newPage(true);
     const { synced, errors, total } = await runPendingSync(page);
     await closeBrowser();
 
